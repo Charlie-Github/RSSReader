@@ -67,7 +67,7 @@
 - (void)stripHTMLFromSummary {
     int i = 0;
     int count = self.parseResults.count;
-    
+    //cycles through each 'summary' element stripping HTML
     while (i < count) {
         NSString *tempString = [[self.parseResults objectAtIndex:i] objectForKey:@"summary"];
         NSString *strippedString = [tempString stringByStrippingHTML];
