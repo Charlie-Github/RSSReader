@@ -12,15 +12,24 @@
 @implementation WebViewController
 @synthesize url = _url, webView = _webView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil url:(NSURL *)postURL title:(NSString *)postTitle
+//{
+//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+//    if (self) {
+//        // Custom initialization
+//    }
+//    return self;
+//}
+
+- (id)initWithURL:(NSURL *)postURL title:(NSString *)postTitle
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super init];
     if (self) {
-        // Custom initialization
+        _url = postURL;
+        self.title = postTitle;
     }
     return self;
 }
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
