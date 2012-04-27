@@ -86,12 +86,14 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    // Configure the cell...
+    // Configure titleLabel
     cell.textLabel.text = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"title"];
     cell.textLabel.numberOfLines = 2;
+    //Configure detailTitleLabel
     cell.detailTextLabel.text = [[[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"summary"] stringByStrippingHTML];
     cell.detailTextLabel.numberOfLines = 2;
     
+    //Set accessoryType
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
