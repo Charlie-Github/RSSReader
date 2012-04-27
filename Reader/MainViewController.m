@@ -11,6 +11,19 @@
 
 @end
 
+@implementation NSString (mycategory)
+
+- (NSString *)stringByStrippingHTML 
+{
+    NSRange r;
+    NSString *s = [self copy];
+    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+        s = [s stringByReplacingCharactersInRange:r withString:@""];
+    return s; 
+}
+
+@end
+
 @implementation MainViewController
 @synthesize parseResults = _parseResults;
 
@@ -75,7 +88,8 @@
     }
     // Configure the cell...
     cell.textLabel.text = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"title"];
-    cell.detailTextLabel.text = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"summary"];
+
+    cell.detailTextLabel.text = [[[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"summary"] stringByStrippingHTML];
     cell.detailTextLabel.numberOfLines = 2;
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -89,7 +103,6 @@
 {
     NSURL *url = [NSURL URLWithString:[[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"link"]];
     NSString *title = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"title"];
-    
     WebViewController *vc = [[WebViewController alloc] initWithURL:url title:title];
     [self.navigationController pushViewController:vc animated:YES];
 }
