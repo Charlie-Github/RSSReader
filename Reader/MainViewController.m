@@ -43,7 +43,7 @@
     //Sets the navigation bar title
     self.title = @"News";
     //Set table row height so it can fit title & 2 lines of summary
-    self.tableView.rowHeight = 60;
+    self.tableView.rowHeight = 85;
     
     //Parse feed
     KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/cnn_topstories.rss" delegate:nil];
@@ -88,7 +88,7 @@
     }
     // Configure the cell...
     cell.textLabel.text = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"title"];
-
+    cell.textLabel.numberOfLines = 2;
     cell.detailTextLabel.text = [[[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"summary"] stringByStrippingHTML];
     cell.detailTextLabel.numberOfLines = 2;
     
