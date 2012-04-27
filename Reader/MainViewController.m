@@ -49,6 +49,7 @@
     KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/cnn_topstories.rss" delegate:nil];
     _parseResults = [parser posts];
 
+    [self stripHTMLFromSummary];
 }
 
 - (void)viewDidUnload
@@ -61,6 +62,20 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)stripHTMLFromSummary {
+    int i = 0;
+    int count = self.parseResults.count;
+    
+    while (i < count) {
+        NSString *tempString = [[self.parseResults objectAtIndex:i] objectForKey:@"summary"];
+        NSString *strippedString = [tempString stringByStrippingHTML];
+        NSMutableDictionary *dict = [self.parseResults objectAtIndex:i];
+        [dict setObject:strippedString forKey:@"summary"];
+        [self.parseResults replaceObjectAtIndex:i withObject:dict];
+        i++;
+    }
 }
 
 #pragma mark - Table view data source
@@ -90,7 +105,8 @@
     cell.textLabel.text = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"title"];
     cell.textLabel.numberOfLines = 2;
     //Configure detailTitleLabel
-    cell.detailTextLabel.text = [[[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"summary"] stringByStrippingHTML];
+    cell.detailTextLabel.text = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"summary"];
+
     cell.detailTextLabel.numberOfLines = 2;
     
     //Set accessoryType
