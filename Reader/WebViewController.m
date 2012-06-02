@@ -4,7 +4,7 @@
 //
 
 #import "WebViewController.h"
-
+#import "AppDelegate.h"
 @interface WebViewController ()
 
 @end
@@ -12,7 +12,7 @@
 @implementation WebViewController
 @synthesize url = _url, webView = _webView;
 
-- (id)initWithURL:(NSURL *)postURL title:(NSString *)postTitle
+- (id)initWithURL:(NSString *)postURL title:(NSString *)postTitle
 {
     self = [super init];
     if (self) {
@@ -24,13 +24,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+
+    self.url = [self.url stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];  
+    NSURL *newURL = [NSURL URLWithString:[self.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	
+    // Do any additional setup after loading the view.
     _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:self.webView];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:newURL]];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.url]];
 }
 
 - (void)viewDidUnload
