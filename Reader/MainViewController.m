@@ -4,7 +4,6 @@
 //
 
 #import "MainViewController.h"
-#import "KMXMLParser.h"
 #import "WebViewController.h"
 
 @interface MainViewController ()
@@ -40,13 +39,16 @@
 {
     [super viewDidLoad];
 
+    UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reloadFeed)];
+    self.navigationItem.rightBarButtonItem = refreshButton;
+    
     //Sets the navigation bar title
     self.title = @"News";
     //Set table row height so it can fit title & 2 lines of summary
     self.tableView.rowHeight = 85;
     
     //Parse feed
-    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/cnn_topstories.rss" delegate:nil];
+    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/edition.rss" delegate:self];
     _parseResults = [parser posts];
 
     [self stripHTMLFromSummary];
@@ -76,6 +78,14 @@
         [self.parseResults replaceObjectAtIndex:i withObject:dict];
         i++;
     }
+}
+
+- (void)reloadFeed {
+    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/edition.rss" delegate:self];
+    _parseResults = [parser posts];
+
+    [self stripHTMLFromSummary];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -119,10 +129,26 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSURL *url = [NSURL URLWithString:[[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"link"]];
+    NSString *url = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"link"];
     NSString *title = [[self.parseResults objectAtIndex:indexPath.row] objectForKey:@"title"];
     WebViewController *vc = [[WebViewController alloc] initWithURL:url title:title];
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark - KMXMLParser Delegate
+
+- (void)parserDidFailWithError:(NSError *)error {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not parse feed. Check your network connection." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+    [alert show];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+- (void)parserCompletedSuccessfully {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
+- (void)parserDidBegin {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 @end
