@@ -48,7 +48,7 @@
     self.tableView.rowHeight = 85;
     
     //Parse feed
-    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/edition.rss" delegate:self];
+    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://charliegaoblog.wordpress.com/feed/" delegate:self];
     _parseResults = [parser posts];
 
     [self stripHTMLFromSummary];
@@ -81,7 +81,7 @@
 }
 
 - (void)reloadFeed {
-    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://rss.cnn.com/rss/edition.rss" delegate:self];
+    KMXMLParser *parser = [[KMXMLParser alloc] initWithURL:@"http://charliegaoblog.wordpress.com/feed/" delegate:self];
     _parseResults = [parser posts];
 
     [self stripHTMLFromSummary];
